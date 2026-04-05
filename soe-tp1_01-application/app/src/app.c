@@ -102,7 +102,7 @@ void app_init(void)
 					  "Task BTN",						/* Text name for the task. This is to facilitate debugging only. */
 					  (2 * configMINIMAL_STACK_SIZE),	/* Stack depth in words. */
 					  NULL,								/* We are not using the task parameter. */
-					  (tskIDLE_PRIORITY + 1ul),			/* This task will run at priority 1. */
+					  (2ul),			/* This task will run at priority 1. */
 					  &h_task_btn);						/* We are using a variable as task handle. */
 
     /* Check the thread was created successfully. */
