@@ -1,0 +1,20 @@
+## Análisis de la Secuencia de Inicio (Boot) y `SystemCoreClock`
+
+Analizar este paso es fundamental porque nos permite ver qué ocurre "bajo el capó" del microcontrolador antes de que nuestra aplicación siquiera empiece a correr, cumpliendo con el objetivo de analizar y explicar el código fuente.
+
+El viaje de nuestro **STM32** arranca físicamente en el archivo en código ensamblador `startup_stm32f103rbtx.s`, específicamente en la rutina llamada `Reset_Handler`. Este es el primerísimo código que se ejecuta cuando le damos energía a la placa o tocamos el botón de reset físico.
+
+### Búsqueda de la inicialización
+
+Para empezar a trazar la evolución de `SystemCoreClock` (que es una variable global en `C` que almacena la velocidad de nuestro procesador en Hertz), necesitamos buscar dónde se inicializa por primera vez en la vida del programa.
+
+Si inspeccionamos el archivo `startup_stm32f103rbtx.s` y miramos las instrucciones dentro del bloque `Reset_Handler`, se observa que el código hace las preparaciones necesarias en la memoria (copia de variables inicializadas y puesta a cero de variables no inicializadas). 
+
+Luego, justo antes de saltar a nuestra función `main` (utilizando la instrucción de ensamblador `bl main`), el sistema realiza una llamada crucial para la configuración del reloj:
+
+```assembly
+  /* Llamada a la función de inicialización del sistema */
+  bl  SystemInit
+  
+  /* Llamada al punto de entrada de nuestra aplicación en C */
+  bl  main
